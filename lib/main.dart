@@ -1,7 +1,9 @@
+import 'package:buddy_app/features/landing_page/landing_page.dart';
+import 'package:buddy_app/features/new_post/new_post_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const  MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -9,13 +11,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Buddy App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-    
+      home:CreatePostScreen(),
+     
     );
   }
 }
