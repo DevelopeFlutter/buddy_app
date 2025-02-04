@@ -34,7 +34,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   late Post post;
   late bool isLiked;
-  bool _isLoading = true; 
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
     Future.delayed(Duration(seconds: 3), () {
       setState(() {
-        _isLoading = false; 
+        _isLoading = false;
       });
     });
   }
@@ -96,39 +96,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   Widget build(BuildContext context) {
     Post post = widget.post;
     return Scaffold(
-          resizeToAvoidBottomInset: true,
-
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: TextField(
-                  controller: _commentController,
-                  decoration: const InputDecoration(
-                    hintText: "Add a comment...",
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: _addComment,
-            ),
-          ],
-        ),
-      ),
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
-          child:ConstrainedBox(
-             constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+           reverse: true,
+          child: ConstrainedBox(
+            constraints:
+                BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
             child: Column(
               children: [
                 const SizedBox(
@@ -160,7 +134,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   height: 20,
                 ),
                 _isLoading
-                    ? const Center(child: CircularProgressIndicator()) 
+                    ? const Center(child: CircularProgressIndicator())
                     : PostWidget(
                         profileImage: widget.userProfileUrl,
                         username: post.title,
@@ -180,15 +154,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           child: Column(
                             children: [
                               ListView.builder(
-                                
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: widget.comments.length,
                                 itemBuilder: (context, index) {
                                   Comment comment = widget.comments[index];
-                                  User commentUser = getUserById(comment.userId);
+                                  User commentUser =
+                                      getUserById(comment.userId);
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
                                     child: Row(
                                       children: [
                                         CustomAvatar(
@@ -200,32 +175,41 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         ),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                                            textBaseline: TextBaseline.ideographic,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.baseline,
+                                            textBaseline:
+                                                TextBaseline.ideographic,
                                             children: [
                                               Text(commentUser.name,
                                                   style: const TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.w500,
-                                                      fontFamily: AppTextStyles.arialUniCodeMs)),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontFamily: AppTextStyles
+                                                          .arialUniCodeMs)),
                                               const SizedBox(
                                                 height: 3,
                                               ),
                                               Container(
                                                 width: double.infinity,
-                                                padding: const EdgeInsets.only(left: 5, right: 10),
+                                                padding: const EdgeInsets.only(
+                                                    left: 5, right: 10),
                                                 height: 25,
                                                 decoration: BoxDecoration(
-                                                  color: Colors.blue.withOpacity(0.1),
-                                                  borderRadius: BorderRadius.circular(4),
+                                                  color: Colors.blue
+                                                      .withOpacity(0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
                                                 ),
                                                 child: Text(
                                                   textAlign: TextAlign.start,
                                                   comment.text,
                                                   style: const TextStyle(
                                                       fontSize: 14,
-                                                      fontFamily: AppTextStyles.arialUniCodeMs),
-                                                  overflow: TextOverflow.ellipsis,
+                                                      fontFamily: AppTextStyles
+                                                          .arialUniCodeMs),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               )
                                             ],
@@ -239,6 +223,33 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             ],
                           ),
                         ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: TextField(
+                            controller: _commentController,
+                            decoration: const InputDecoration(
+                              hintText: "Add a comment...",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: _addComment,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
