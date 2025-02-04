@@ -1,31 +1,36 @@
-import 'package:buddy_app/constants/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AppButton extends StatelessWidget {
- final String text;
-
- final void Function()? onTap;
-  const AppButton({super.key,required this.onTap, required this.text});
+  final String text;
+  final double height;
+  final double width;
+ final  TextStyle style;
+  final void Function()? onTap;
+   const AppButton(
+      {super.key,
+      required this.onTap,
+      required this.text,
+      required this.height,
+      required this.width,
+       required this.style,
+      });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap:onTap ,
+      onTap: onTap,
       child: Container(
-        height: 42,
-        width: 180,
+        height: height,
+        width: width,
         decoration: BoxDecoration(
           color: Colors.blue,
-borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12),
         ),
         alignment: Alignment.center,
-
-child: Text(text,style:  const TextStyle(
-color: Colors.white,
-fontFamily: AppTextStyles.arialUniCodeMs,
-  fontWeight: FontWeight.w500,
-  fontSize: 18,
-),),
+        child: Text(
+          text,
+          style: style
+        ),
       ),
     );
   }

@@ -1,0 +1,359 @@
+{
+    "comments": [
+        {
+            "id": "c1",
+            "text": "This is so interesting!",
+            "parent": "p2",
+            "userId": "u2"
+        },
+        {
+            "id": "c2",
+            "text": "Amazing post!",
+            "parent": "p4",
+            "userId": "u5"
+        },
+        {
+            "id": "c3",
+            "text": "Thanks for sharing!",
+            "parent": "p3",
+            "userId": "u7"
+        },
+        {
+            "id": "c4",
+            "text": "I totally agree.",
+            "parent": "p7",
+            "userId": "u3"
+        },
+        {
+            "id": "c5",
+            "text": "Great insights!",
+            "parent": "p9",
+            "userId": "u10"
+        },
+        {
+            "id": "c6",
+            "text": "This is really helpful!",
+            "parent": "p10",
+            "userId": "u8"
+        },
+        {
+            "id": "c7",
+            "text": "Where did you capture this?",
+            "parent": "p1",
+            "userId": "u6"
+        },
+        {
+            "id": "c8",
+            "text": "Looks delicious!",
+            "parent": "p4",
+            "userId": "u9"
+        },
+        {
+            "id": "c9",
+            "text": "I need to try this!",
+            "parent": "p5",
+            "userId": "u1"
+        },
+        {
+            "id": "c10",
+            "text": "Can you share more tips?",
+            "parent": "p8",
+            "userId": "u4"
+        },
+        {
+            "id": "c11",
+            "text": "Beautifully written!",
+            "parent": "p2",
+            "userId": "u10"
+        },
+        {
+            "id": "c12",
+            "text": "I love this band too!",
+            "parent": "p7",
+            "userId": "u5"
+        },
+        {
+            "id": "c13",
+            "text": "Such a great view!",
+            "parent": "p9",
+            "userId": "u3"
+        },
+        {
+            "id": "c14",
+            "text": "What camera did you use?",
+            "parent": "p1",
+            "userId": "u7"
+        },
+        {
+            "id": "c15",
+            "text": "I learned a lot from this.",
+            "parent": "p10",
+            "userId": "u2"
+        }
+    ],
+    "users": [
+        {
+            "id": "u1",
+            "name": "Alice",
+            "email": "alice@example.com",
+            "password": "password123",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoq0f1tSU2b8opZaApGh5tl2FreFb52dyo6Q&s",
+            "followers": [
+                "u2",
+                "u3"
+            ],
+            "following": [
+                "u4",
+                "u5"
+            ]
+        },
+        {
+            "id": "u2",
+            "name": "Bob",
+            "email": "bob@example.com",
+            "password": "securepass",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb3F5APDToo79RzPrUblyHfN3w4Ol2VAoF3w&s",
+            "followers": [
+                "u1"
+            ],
+            "following": [
+                "u6"
+            ]
+        },
+        {
+            "id": "u3",
+            "name": "Charlie",
+            "email": "charlie@example.com",
+            "password": "mypassword",
+            "profileUrl": "https://xsgames.co/randomusers/assets/avatars/male/23.jpg",
+            "followers": [
+                "u4",
+                "u5"
+            ],
+            "following": [
+                "u1",
+                "u2"
+            ]
+        },
+        {
+            "id": "u4",
+            "name": "Diana",
+            "email": "diana@example.com",
+            "password": "pass1234",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfvxAOVOCCoYSsornKXmWEhdFU_h5hkPFHzw&s",
+            "followers": [
+                "u3"
+            ],
+            "following": [
+                "u6",
+                "u7"
+            ]
+        },
+        {
+            "id": "u5",
+            "name": "Eve",
+            "email": "eve@example.com",
+            "password": "passwordxyz",
+            "profileUrl": "https://img.freepik.com/free-photo/woman-hairdresser-salon_144627-8867.jpg",
+            "followers": [
+                "u2",
+                "u4"
+            ],
+            "following": [
+                "u1",
+                "u8"
+            ]
+        },
+        {
+            "id": "u6",
+            "name": "Frank",
+            "email": "frank@example.com",
+            "password": "letmein",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgWkA3X9cdGn3tggpvy_hnWe0QmRZW-DjwHw&s",
+            "followers": [
+                "u4"
+            ],
+            "following": [
+                "u9"
+            ]
+        },
+        {
+            "id": "u7",
+            "name": "Grace",
+            "email": "grace@example.com",
+            "password": "graceful",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZCM5-3zQr2GG22CzIJbBnhYOTMTzVU7sVWlZhvpjBnyRxDhnRYGIDS07FkPzOTg0VM48&usqp=CAU",
+            "followers": [
+                "u6",
+                "u8"
+            ],
+            "following": [
+                "u10"
+            ]
+        },
+        {
+            "id": "u8",
+            "name": "Hank",
+            "email": "hank@example.com",
+            "password": "hankpass",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWdfj1lYIHuHfM7tQ6GF1ndwRqp6TMhIJJhQ&s",
+            "followers": [
+                "u7"
+            ],
+            "following": [
+                "u1",
+                "u3"
+            ]
+        },
+        {
+            "id": "u9",
+            "name": "Ivy",
+            "email": "ivy@example.com",
+            "password": "ivypass",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQztCp1A5N0MZdyKW5kVSRiGYH2_IYzQSkTgQ&s",
+            "followers": [
+                "u8"
+            ],
+            "following": [
+                "u2",
+                "u5"
+            ]
+        },
+        {
+            "id": "u10",
+            "name": "Jack",
+            "email": "jack@example.com",
+            "password": "jackson",
+            "profileUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCDJ7HMyvBiRCKszxbK2eAUpIZmlXw04ECyg&s",
+            "followers": [
+                "u9"
+            ],
+            "following": [
+                "u4",
+                "u6"
+            ]
+        }
+    ],
+    "posts": [
+        {
+            "id": "p1",
+            "title": "Sunset Views",
+            "text": "Captured this beautiful sunset yesterday.",
+            "image": "https://img.freepik.com/free-photo/beautiful-tropical-beach-sea-ocean-with-coconut-palm-tree-sunrise-time_74190-7458.jpg",
+            "userId": "u1",
+            "createdAt": "2025-01-25T10:00:00Z",
+            "likes": [
+                "u2",
+                "u3"
+            ]
+        },
+        {
+            "id": "p2",
+            "title": "Tech Trends 2025",
+            "text": "Discussing the latest in AI and robotics.",
+            "image": "https://softwaremill.com/user/pages/blog/250.technology-trends-to-watch-in-2025/g26swek0ma8izqb.jpg?g-044cb45a",
+            "userId": "u2",
+            "createdAt": "2025-01-25T11:00:00Z",
+            "likes": [
+                "u1",
+                "u5"
+            ]
+        },
+        {
+            "id": "p3",
+            "title": "Fitness Goals",
+            "text": "Setting realistic goals for 2025.",
+            "image": "https://img.freepik.com/free-photo/young-fitness-man-studio_7502-5008.jpg",
+            "userId": "u3",
+            "createdAt": "2025-01-25T12:00:00Z",
+            "likes": [
+                "u4",
+                "u6"
+            ]
+        },
+        {
+            "id": "p4",
+            "title": "Recipe of the Day",
+            "text": "Try this delicious pasta recipe!",
+            "image": "https://img.freepik.com/free-photo/penne-pasta-tomato-sauce-with-chicken-tomatoes-wooden-table_2829-19739.jpg",
+            "userId": "u4",
+            "createdAt": "2025-01-25T13:00:00Z",
+            "likes": [
+                "u3",
+                "u7"
+            ]
+        },
+        {
+            "id": "p5",
+            "title": "Book Recommendations",
+            "text": "Top 5 books to read this year.",
+            "image": "https://www.realsimple.com/thmb/KrGb42aamhHKaMzWt1Om7U42QsY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/great-books-for-anytime-2000-4ff4221eb1e54b659689fef7d5e265d5.jpg",
+            "userId": "u5",
+            "createdAt": "2025-01-25T14:00:00Z",
+            "likes": [
+                "u8",
+                "u9"
+            ]
+        },
+        {
+            "id": "p6",
+            "title": "Mountain Adventure",
+            "text": "Explored the mountains last weekend.",
+            "image": "https://img.freepik.com/free-photo/beautiful-shot-grassy-hills-covered-trees-near-mountains-dolomites-italy_181624-24400.jpg",
+            "userId": "u6",
+            "createdAt": "2025-01-25T15:00:00Z",
+            "likes": [
+                "u2",
+                "u10"
+            ]
+        },
+        {
+            "id": "p7",
+            "title": "Music Vibes",
+            "text": "New album release from my favorite band!",
+            "image": "https://img.freepik.com/free-photo/band-performing-studio_107420-96137.jpg",
+            "userId": "u7",
+            "createdAt": "2025-01-25T16:00:00Z",
+            "likes": [
+                "u1",
+                "u5"
+            ]
+        },
+        {
+            "id": "p8",
+            "title": "Gardening Tips",
+            "text": "How to care for indoor plants.",
+            "image": "https://www.mashrita.com/wp-content/uploads/2017/06/Indoor-Plants_BG-1-1180x704.jpg",
+            "userId": "u8",
+            "createdAt": "2025-01-25T17:00:00Z",
+            "likes": [
+                "u4",
+                "u6"
+            ]
+        },
+        {
+            "id": "p9",
+            "title": "Travel Diaries",
+            "text": "My journey across Europe.",
+            "image": "https://img.freepik.com/free-photo/river-onyar-girona_1398-4408.jpg",
+            "userId": "u9",
+            "createdAt": "2025-01-25T18:00:00Z",
+            "likes": [
+                "u2",
+                "u7"
+            ]
+        },
+        {
+            "id": "p10",
+            "title": "Coding Tips",
+            "text": "Best practices for clean code.",
+            "image": "https://miro.medium.com/v2/resize:fit:1400/1*FraNYyiJVTPteVKO1W_qCw.png",
+            "userId": "u10",
+            "createdAt": "2025-01-25T19:00:00Z",
+            "likes": [
+                "u3",
+                "u8"
+            ]
+        }
+    ]
+}

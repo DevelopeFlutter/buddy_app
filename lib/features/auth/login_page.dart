@@ -1,6 +1,8 @@
 import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/auth/components/app_button.dart';
 import 'package:buddy_app/features/auth/components/app_textfield.dart';
+import 'package:buddy_app/features/auth/services/auth_services.dart';
+import 'package:buddy_app/features/landing_page/landing_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,8 +13,50 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final AuthService authService = AuthService();
+  bool isLoading = false;
+  bool hideUI = false;
+
+  @override
+  void initState() {
+    super.initState();
+    authService.loadUsers();
+  }
+
+  void _login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      hideUI = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    var user = authService.login(email, password);
+    setState(() {
+      hideUI = false;
+    });
+
+    if (user != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Login Successful')));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LandingPage(loggedInUser: user)),
+      );
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Login Failed')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,54 +65,62 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "BUDDY APP",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                      fontFamily: AppTextStyles.arialRoundedMTBold),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  "WELCOME",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      fontFamily: AppTextStyles.arialRoundedMTBold),
-                ),
-                const SizedBox(
-                  height: 60,
-                ),
-                AppTextField(
-                  fieldType: 'Username',
-                    controller: emailController,
-                    hintText: 'JohnDoe@gmail.com',
-                    obscureText: false),
-                const SizedBox(
-                  height: 20,
-                ),
-                AppTextField(
-                  fieldType: 'Password',
-                    controller: passwordController,
-                    hintText: '***************',
-                    obscureText: true),
-                const SizedBox(
-                  height: 25,
-                ),
-                AppButton(
-                  onTap: () {},
-                  text: 'Login',
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-              ],
-            ),
+            child: hideUI
+                ? const CircularProgressIndicator()
+                : Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "BUDDY APP",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 26,
+                              fontFamily: AppTextStyles.arialRoundedMTBold),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "WELCOME",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 22,
+                              fontFamily: AppTextStyles.arialRoundedMTBold),
+                        ),
+                        const SizedBox(height: 60),
+                        AppTextField(
+                          fieldType: 'Username',
+                          controller: emailController,
+                          hintText: 'JohnDoe@gmail.com',
+                          obscureText: false,
+                          validator: (value) =>
+                              value == null || value.isEmpty ? 'Enter Email' : null,
+                        ),
+                        AppTextField(
+                          fieldType: 'Password',
+                          controller: passwordController,
+                          hintText: '***************',
+                          obscureText: true,
+                          validator: (value) =>
+                              value == null || value.isEmpty ? 'Enter Password' : null,
+                        ),
+                        const SizedBox(height: 25),
+                        AppButton(
+                          height: 42,
+                          width: 180,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: AppTextStyles.arialUniCodeMs,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                          ),
+                          onTap: _login,
+                          text: 'Login',
+                        ),
+                        const SizedBox(height: 50),
+                      ],
+                    ),
+                  ),
           ),
         ),
       ),

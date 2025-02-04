@@ -5,19 +5,22 @@ class AppAssetImage extends StatelessWidget {
   final double width;
   final double height;
   final BoxFit fit;
+ final  Color color;
 
-  const AppAssetImage({
+ const    AppAssetImage({
     super.key,
     required this.imagePath,
-    this.width = 24,
-    this.height = 24,
+    this.width=24,
+     this.height=24,
     this.fit = BoxFit.cover,
+    this.color = Colors.transparent,
   });
 
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      imagePath,
+       imagePath,
+      color: color,
       width: width,
       height: height,
       fit: fit,

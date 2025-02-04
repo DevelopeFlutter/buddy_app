@@ -1,5 +1,8 @@
 import 'package:buddy_app/constants/app_icons.dart';
+import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/landing_page/widgets/app_asset_image.dart';
+import 'package:buddy_app/features/landing_page/widgets/app_network_image.dart';
+import 'package:buddy_app/features/landing_page/widgets/custom_avatar.dart';
 import 'package:flutter/material.dart';
 
 class PostWidget extends StatelessWidget {
@@ -10,8 +13,11 @@ class PostWidget extends StatelessWidget {
   final String caption;
   final String postImage;
   final int comments;
+  final bool isLikedByCurrentUser;
+  final VoidCallback onLikePressed;
+  final VoidCallback postDetailPressed;
 
-  const PostWidget({
+  PostWidget({
     required this.profileImage,
     required this.username,
     required this.time,
@@ -19,15 +25,18 @@ class PostWidget extends StatelessWidget {
     required this.caption,
     required this.postImage,
     required this.comments,
-    Key? key,
-  }) : super(key: key);
+    required this.isLikedByCurrentUser,
+    required this.onLikePressed,
+    required this.postDetailPressed,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
-mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -35,50 +44,116 @@ mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.blue,
-                    // backgroundImage: AssetImage(profileImage),
+                  CustomAvatar(
+                    radius: 33,
+                    color: Colors.blue,
+                    imgPath: profileImage,
                   ),
-                   const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 210,
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          username,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black.withOpacity(0.8),
+                                fontSize: 22,
+                                fontFamily: AppTextStyles.arialRoundedMTBold)),
+                      ),
+                      const SizedBox(height: 5),
+                      Text('$time  •  $likes Likes',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.grey.withOpacity(0.6),
+                              fontSize: 14,
+                              fontFamily: AppTextStyles.arialUniCodeMs)),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
                 children: [
-                  Text(username, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text('$time  •  $likes Likes'),
+                  AppAssetImage(
+                    height: 24,
+                    width: 24,
+                    imagePath: AppIcons.menuIcon,
+                    color: Colors.grey.withOpacity(0.3),
+                  )
                 ],
               ),
-                ],
-              ),
-
-                           const Row(
-                             children: [
-                               Icon(Icons.more_vert),
-                             ],
-                           ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Text(caption),
+            padding: const EdgeInsets.only(top: 5, bottom: 12, left: 2),
+            child: GestureDetector(
+              onTap: postDetailPressed,
+              child: Text(caption,
+                  style: const TextStyle(
+                      fontSize: 14, fontFamily: AppTextStyles.arialUniCodeMs)),
+            ),
           ),
-          // const SizedBox(height: 10),
-          // Image.asset(postImage, fit: BoxFit.cover),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-             
-                AppAssetImage(imagePath:AppIcons.likeIcon ),
-               
-               Text('Liked'),
-              const SizedBox(width: 10),
-             
-               AppAssetImage(imagePath: AppIcons.commentIcon),
-               
-              Text('$comments Comments'),
-            ],
+          GestureDetector(
+            onTap: postDetailPressed,
+            child: postImage.startsWith('http') || postImage.startsWith('https')
+                ? SizedBox(child: AppNetworkImage(imgPath: postImage))
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: SizedBox(
+                        width: double.infinity,
+                        height: 300,
+                        child: Image.asset(postImage, fit: BoxFit.cover))),
           ),
-          const Divider(),
+          Padding(
+            padding: const EdgeInsets.only(left: 3,top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                    onTap: onLikePressed,
+                    child: AppAssetImage(
+                      imagePath: AppIcons.likeIcon,
+                      color: isLikedByCurrentUser ? Colors.blue : Colors.black,
+                    )),
+                const SizedBox(width: 3),
+                Text('Liked',
+                    style: TextStyle(
+                        color:
+                            isLikedByCurrentUser ? Colors.blue : Colors.black,
+                        fontSize: 14,
+                        fontFamily: AppTextStyles.arialUniCodeMs)),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: postDetailPressed,
+                  child: Row(
+                    children: [
+                      AppAssetImage(
+                        imagePath: AppIcons.commentIcon,
+                        color: Colors.black,
+                      ),
+                      const SizedBox(width: 3),
+                      Text('$comments Comments',
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: AppTextStyles.arialUniCodeMs)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 30),
+          Divider(
+            color: Colors.grey.withOpacity(0.3),
+            thickness: 3,
+            endIndent: 60,
+            indent: 80,
+          ),
+                    const SizedBox(height: 30),
+
         ],
       ),
     );
