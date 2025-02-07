@@ -31,10 +31,10 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final CommentService _commentService = CommentService();
-  late AuthService _authService;
+  late AuthProvider _authService;
   List<Post> _userPosts = [];
   bool isFollowing = false;
-  bool _isLoading = true; 
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _commentService.getCommentsForPost(widget.user.id);
     loadComments();
 
-    _authService = AuthService();
+    _authService = AuthProvider();
     _loadUserPosts();
 
     setState(() {
@@ -61,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserPosts() async {
-    await _authService.loadPosts();
+    // await _authService.loadPosts();
     setState(() {
       _userPosts = widget.userPosts;
     });
@@ -142,8 +142,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       widget.currentUser!.following.add(widget.profileUser.id);
                       widget.profileUser.followers.add(widget.currentUser!.id);
                     } else {
-                      widget.currentUser!.following.remove(widget.profileUser.id);
-                      widget.profileUser.followers.remove(widget.currentUser!.id);
+                      widget.currentUser!.following
+                          .remove(widget.profileUser.id);
+                      widget.profileUser.followers
+                          .remove(widget.currentUser!.id);
                     }
                   }
                 });
@@ -159,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 50),
             _isLoading
-                ? const Center(child: CircularProgressIndicator()) 
+                ? const Center(child: CircularProgressIndicator())
                 : Expanded(
                     child: ListView.builder(
                       itemCount: _userPosts.length,

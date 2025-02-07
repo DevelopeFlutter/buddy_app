@@ -17,7 +17,7 @@ class PostWidget extends StatelessWidget {
   final VoidCallback onLikePressed;
   final VoidCallback postDetailPressed;
 
-  PostWidget({
+  const PostWidget({
     required this.profileImage,
     required this.username,
     required this.time,

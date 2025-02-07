@@ -4,6 +4,7 @@ import 'package:buddy_app/features/auth/components/app_textfield.dart';
 import 'package:buddy_app/features/auth/services/auth_services.dart';
 import 'package:buddy_app/features/landing_page/landing_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,14 +17,13 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final AuthService authService = AuthService();
   bool isLoading = false;
   bool hideUI = false;
 
   @override
   void initState() {
     super.initState();
-    authService.loadUsers();
+    Provider.of<AuthProvider>(context,listen: false).loadUsers();
   }
 
   void _login() async {
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
-    var user = authService.login(email, password);
+    var user = Provider.of<AuthProvider>(context,listen: false).login(email, password);
     setState(() {
       hideUI = false;
     });
@@ -50,7 +50,8 @@ class _LoginPageState extends State<LoginPage> {
           .showSnackBar(const SnackBar(content: Text('Login Successful')));
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LandingPage(loggedInUser: user)),
+        MaterialPageRoute(
+            builder: (context) => const LandingPage()),
       );
     } else {
       ScaffoldMessenger.of(context)
@@ -93,16 +94,18 @@ class _LoginPageState extends State<LoginPage> {
                           controller: emailController,
                           hintText: 'JohnDoe@gmail.com',
                           obscureText: false,
-                          validator: (value) =>
-                              value == null || value.isEmpty ? 'Enter Email' : null,
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Enter Email'
+                              : null,
                         ),
                         AppTextField(
                           fieldType: 'Password',
                           controller: passwordController,
                           hintText: '***************',
                           obscureText: true,
-                          validator: (value) =>
-                              value == null || value.isEmpty ? 'Enter Password' : null,
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Enter Password'
+                              : null,
                         ),
                         const SizedBox(height: 25),
                         AppButton(

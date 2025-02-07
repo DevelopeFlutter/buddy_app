@@ -1,28 +1,29 @@
 import 'package:buddy_app/constants/app_icons.dart';
 import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/auth/model/user_model.dart';
-import 'package:buddy_app/features/auth/services/auth_services.dart';
 import 'package:buddy_app/features/detail_page/model/comments_model.dart';
 import 'package:buddy_app/features/detail_page/post_detail_screen.dart';
 import 'package:buddy_app/features/detail_page/services/comment_services.dart';
 import 'package:buddy_app/features/landing_page/model/post_model.dart';
+import 'package:buddy_app/features/landing_page/post_provider.dart';
 import 'package:buddy_app/features/landing_page/widgets/app_asset_image.dart';
 import 'package:buddy_app/features/landing_page/widgets/custom_avatar.dart';
 import 'package:buddy_app/features/landing_page/widgets/post_widget.dart';
 import 'package:buddy_app/features/new_post/new_post_page.dart';
 import 'package:buddy_app/features/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LandingPage extends StatefulWidget {
-  final User? loggedInUser;
-  const LandingPage({super.key, this.loggedInUser});
+  const LandingPage({
+    super.key,
+  });
 
   @override
   State<LandingPage> createState() => _LandingPageState();
 }
 
 class _LandingPageState extends State<LandingPage> {
-  late AuthService _authService;
   final CommentService _commentService = CommentService();
   User? _currentUser;
   List<User> _allUsers = [];
@@ -31,30 +32,36 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   void initState() {
+   
+    var data = Provider.of<PostProvider>(context, listen: false);
+    data.getAllPosts();
+    data.getAllUsers();
+  
+    // print('${postData.allUsers?.length} lenght');
     super.initState();
-    _authService = AuthService();
-    _loadUserData();
+    // _authService = AuthProvider();
+    // _loadUserData();
   }
 
-  Future<void> _loadUserData() async {
-    await Future.delayed(const Duration(seconds: 3)); 
-    
-    await _authService.loadUsers();
-    await _authService.loadPosts();
-    await _commentService.loadComments();
+  // Future<void> _loadUserData() async {
+  //   await Future.delayed(const Duration(seconds: 3));
 
-    _currentUser = widget.loggedInUser;
+  //   // await _authService.loadUsers();
+  //   // await _authService.loadPosts();
+  //   // await _commentService.loadComments();
 
-    if (_currentUser != null) {
-      setState(() {
-        _allUsers = _authService.getAllUsers();
-        _allUsers.sort((a, b) => a.id == _currentUser!.id ? -1 : 1);
-        _userPosts = _authService.getAllPosts();
+  //   // _currentUser = widget.loggedInUser;
 
-        _isLoading = false;
-      });
-    }
-  }
+  //   if (_currentUser != null) {
+  //     setState(() {
+  //       // _allUsers = _authService.getAllUsers();
+  //       _allUsers.sort((a, b) => a.id == _currentUser!.id ? -1 : 1);
+  //       // _userPosts = _authService.getAllPosts();
+
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
 
   void _toggleLike(Post post) {
     setState(() {
@@ -75,6 +82,11 @@ class _LandingPageState extends State<LandingPage> {
   String? newpost;
   @override
   Widget build(BuildContext context) {
+    final postProvider = Provider.of<PostProvider>(context, listen: false);
+    final posts = postProvider.allPosts ?? [];
+    final users = postProvider.allUsers ?? [];
+    print(users.length);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -120,7 +132,7 @@ class _LandingPageState extends State<LandingPage> {
             Container(
               height: 130,
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator()) 
+                  ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
@@ -136,7 +148,8 @@ class _LandingPageState extends State<LandingPage> {
                                 onTap: () async {
                                   final selectedUser = _allUsers[index];
                                   List<Post> selectedUserPosts = _userPosts
-                                      .where((post) => post.userId == selectedUser.id)
+                                      .where((post) =>
+                                          post.userId == selectedUser.id)
                                       .toList();
                                   final newPost = await Navigator.push(
                                     context,
@@ -173,8 +186,10 @@ class _LandingPageState extends State<LandingPage> {
                               const SizedBox(height: 2),
                               Text(
                                 user.name,
-                                style:  TextStyle(
-                                  color:  _allUsers[index].id == _currentUser?.id?Colors.grey:Colors.black,
+                                style: TextStyle(
+                                  color: _allUsers[index].id == _currentUser?.id
+                                      ? Colors.grey
+                                      : Colors.black,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: AppTextStyles.arialUniCodeMs,
@@ -189,7 +204,7 @@ class _LandingPageState extends State<LandingPage> {
             const SizedBox(height: 12),
             Expanded(
               child: _isLoading
-                  ? const Center(child: const CircularProgressIndicator()) 
+                  ? const Center(child: const CircularProgressIndicator())
                   : ListView.builder(
                       itemCount: _userPosts.length,
                       itemBuilder: (context, index) {
@@ -231,8 +246,8 @@ class _LandingPageState extends State<LandingPage> {
                                   post: post,
                                   userProfileUrl: postUser.profileUrl,
                                   currentUser: _currentUser!,
-                                  comments:
-                                      _commentService.getCommentsForPost(post.id),
+                                  comments: _commentService
+                                      .getCommentsForPost(post.id),
                                 ),
                               ),
                             );

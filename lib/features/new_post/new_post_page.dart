@@ -1,6 +1,8 @@
 import 'package:buddy_app/constants/app_icons.dart';
 import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/auth/components/app_button.dart';
+import 'package:buddy_app/features/auth/model/user_model.dart';
+import 'package:buddy_app/features/auth/services/auth_services.dart';
 import 'package:buddy_app/features/landing_page/widgets/app_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,7 +36,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   void _createPost(String text) {
     if (text.isEmpty && _image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: const Text('Please enter text or select an image')),
+        const SnackBar(
+            content: const Text('Please enter text or select an image')),
       );
       return;
     }
@@ -58,10 +61,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       likes: [],
     );
 
-    Future.delayed(const Duration(seconds: 1000), () {
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.pop(context, newPost);
     });
   }
+
+  AuthProvider _authService = AuthProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +87,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: const AppAssetImage(imagePath: AppIcons.backArrowIcon, color: Colors.black),
+                        child: const AppAssetImage(
+                            imagePath: AppIcons.backArrowIcon,
+                            color: Colors.black),
                       ),
                       const SizedBox(width: 3),
                       const Text(
@@ -117,7 +124,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Container(
@@ -156,9 +162,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
               ),
             ),
-           
             const SizedBox(height: 20),
-              if (_isPosting)
+            if (_isPosting)
               const Center(child: Align(child: CircularProgressIndicator())),
             _image != null
                 ? Expanded(
@@ -196,7 +201,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ),
                   )
                 : const Center(),
-           
           ],
         ),
       ),

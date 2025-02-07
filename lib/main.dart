@@ -1,8 +1,11 @@
 import 'package:buddy_app/features/auth/login_page.dart';
+import 'package:buddy_app/features/auth/services/auth_services.dart';
+import 'package:buddy_app/features/landing_page/post_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const  MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -10,16 +13,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Buddy App',
-      home: 
-      LoginPage()
-      // PostDetailScreen(),
-    
-      // LandingPage(),
-     
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ChangeNotifierProvider(create: (_) => PostProvider()),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Buddy App',
+        home: LoginPage(),
+      ),
     );
   }
 }
-
