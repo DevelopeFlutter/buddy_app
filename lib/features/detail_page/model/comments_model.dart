@@ -6,7 +6,7 @@ class Comment {
 
   Comment({
     required this.id,
-    required this.text,
+    required this.text, 
     required this.parentPostId,
     required this.userId,
   });

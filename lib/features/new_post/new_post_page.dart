@@ -1,8 +1,6 @@
 import 'package:buddy_app/constants/app_icons.dart';
 import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/auth/components/app_button.dart';
-import 'package:buddy_app/features/auth/model/user_model.dart';
-import 'package:buddy_app/features/auth/services/auth_services.dart';
 import 'package:buddy_app/features/landing_page/widgets/app_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,7 +37,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         const SnackBar(
             content: const Text('Please enter text or select an image')),
       );
-      return;
+      
     }
 
     setState(() {
@@ -61,12 +59,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       likes: [],
     );
 
+
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pop(context, newPost);
+      Navigator.pop(context);
     });
   }
-
-  AuthProvider _authService = AuthProvider();
 
   @override
   Widget build(BuildContext context) {

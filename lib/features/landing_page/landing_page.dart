@@ -1,6 +1,7 @@
 import 'package:buddy_app/constants/app_icons.dart';
 import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/auth/model/user_model.dart';
+import 'package:buddy_app/features/auth/services/auth_services.dart';
 import 'package:buddy_app/features/detail_page/model/comments_model.dart';
 import 'package:buddy_app/features/detail_page/post_detail_screen.dart';
 import 'package:buddy_app/features/detail_page/services/comment_services.dart';
@@ -9,7 +10,6 @@ import 'package:buddy_app/features/landing_page/post_provider.dart';
 import 'package:buddy_app/features/landing_page/widgets/app_asset_image.dart';
 import 'package:buddy_app/features/landing_page/widgets/custom_avatar.dart';
 import 'package:buddy_app/features/landing_page/widgets/post_widget.dart';
-import 'package:buddy_app/features/new_post/new_post_page.dart';
 import 'package:buddy_app/features/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,68 +24,24 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  final CommentService _commentService = CommentService();
-  User? _currentUser;
-  List<User> _allUsers = [];
-  List<Post> _userPosts = [];
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
-   
     var data = Provider.of<PostProvider>(context, listen: false);
     data.getAllPosts();
     data.getAllUsers();
-  
-    // print('${postData.allUsers?.length} lenght');
+    data.getComments();
     super.initState();
-    // _authService = AuthProvider();
-    // _loadUserData();
-  }
-
-  // Future<void> _loadUserData() async {
-  //   await Future.delayed(const Duration(seconds: 3));
-
-  //   // await _authService.loadUsers();
-  //   // await _authService.loadPosts();
-  //   // await _commentService.loadComments();
-
-  //   // _currentUser = widget.loggedInUser;
-
-  //   if (_currentUser != null) {
-  //     setState(() {
-  //       // _allUsers = _authService.getAllUsers();
-  //       _allUsers.sort((a, b) => a.id == _currentUser!.id ? -1 : 1);
-  //       // _userPosts = _authService.getAllPosts();
-
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
-
-  void _toggleLike(Post post) {
-    setState(() {
-      if (post.likes.contains(_currentUser!.id)) {
-        post.likes.remove(_currentUser!.id);
-      } else {
-        post.likes.add(_currentUser!.id);
-      }
-    });
-  }
-
-  void _onCommentAdded(Comment comment) {
-    setState(() {
-      _commentService.addComment(comment);
-    });
   }
 
   String? newpost;
   @override
   Widget build(BuildContext context) {
-    final postProvider = Provider.of<PostProvider>(context, listen: false);
+    final postProvider = Provider.of<PostProvider>(context);
     final posts = postProvider.allPosts ?? [];
     final users = postProvider.allUsers ?? [];
-    print(users.length);
+    String? loggeInUserId = Provider.of<AuthProvider>(context).loggeInUsers;
 
     return Scaffold(
       body: SafeArea(
@@ -106,19 +62,19 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      final newPost = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CreatePostScreen(userId: _currentUser!.id),
-                        ),
-                      );
+                      // final newPost = await Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         CreatePostScreen(userId: _currentUser!.id),
+                      //   ),
+                      // );
 
-                      if (newPost != null && newPost is Post) {
-                        setState(() {
-                          _userPosts.insert(0, newPost);
-                        });
-                      }
+                      // if (newPost != null && newPost is Post) {
+                      //   setState(() {
+                      //     _userPosts.insert(0, newPost);
+                      //   });
+                      // }
                     },
                     child: const AppAssetImage(
                       imagePath: AppIcons.addIcon,
@@ -137,41 +93,28 @@ class _LandingPageState extends State<LandingPage> {
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemCount: _allUsers.length,
+                      itemCount: users.length,
                       itemBuilder: (context, index) {
-                        User user = _allUsers[index];
+                        User user = users[index];
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
                               GestureDetector(
                                 onTap: () async {
-                                  final selectedUser = _allUsers[index];
-                                  List<Post> selectedUserPosts = _userPosts
-                                      .where((post) =>
-                                          post.userId == selectedUser.id)
-                                      .toList();
-                                  final newPost = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProfileScreen(
-                                          user: user,
-                                          profileUser: _allUsers[index],
-                                          currentUser: _currentUser,
-                                          userPosts: selectedUserPosts),
-                                    ),
-                                  );
-                                  if (newPost != null && newPost is Post) {
-                                    setState(() {
-                                      _userPosts.insert(0, newPost);
-                                    });
-                                  }
+                                  Provider.of<PostProvider>(context,listen: false)
+                                      .getProfileUser(user.id);
+
+                                  // Navigator.push (context, MaterialPageRoute(
+                                  //     builder: (context) => ProfileScreen(
+
+                                  // )));
                                 },
                                 child: CircleAvatar(
                                   backgroundColor:
-                                      _allUsers[index].id == _currentUser?.id
+                                      users[index].id == loggeInUserId
                                           ? Colors.grey
-                                          : Colors.green,
+                                          : const Color.fromARGB(255, 103, 131, 104),
                                   radius: 42,
                                   child: CircleAvatar(
                                     backgroundColor: Colors.white,
@@ -187,7 +130,7 @@ class _LandingPageState extends State<LandingPage> {
                               Text(
                                 user.name,
                                 style: TextStyle(
-                                  color: _allUsers[index].id == _currentUser?.id
+                                  color: users[index].id == loggeInUserId
                                       ? Colors.grey
                                       : Colors.black,
                                   fontSize: 15,
@@ -204,12 +147,12 @@ class _LandingPageState extends State<LandingPage> {
             const SizedBox(height: 12),
             Expanded(
               child: _isLoading
-                  ? const Center(child: const CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                      itemCount: _userPosts.length,
+                      itemCount: posts.length,
                       itemBuilder: (context, index) {
-                        Post post = _userPosts[index];
-                        User? postUser = _allUsers.firstWhere(
+                        Post post = posts[index];
+                        User? postUser = users.firstWhere(
                           (user) => user.id == post.userId,
                           orElse: () => User(
                             id: '',
@@ -218,46 +161,42 @@ class _LandingPageState extends State<LandingPage> {
                             password: '',
                             followers: [],
                             following: [],
-                            profileUrl: _currentUser!.profileUrl,
+                            profileUrl: '',
                           ),
                         );
-                        List<Comment> comments =
-                            _commentService.getCommentsForPost(post.id);
-                        bool isLikedByCurrentUser =
-                            post.likes.contains(_currentUser!.id);
 
-                        return PostWidget(
-                          profileImage: postUser.profileUrl,
-                          username: postUser.name,
-                          time: post.createdAt.toString(),
-                          likes: post.likes.length,
-                          caption: post.text,
-                          postImage: post.image,
-                          comments: comments.length,
-                          isLikedByCurrentUser: isLikedByCurrentUser,
-                          onLikePressed: () => _toggleLike(post),
-                          postDetailPressed: () async {
-                            final updatedPost = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PostDetailScreen(
-                                  onCommentAdded: _onCommentAdded,
-                                  allUsers: _allUsers,
-                                  post: post,
-                                  userProfileUrl: postUser.profileUrl,
-                                  currentUser: _currentUser!,
-                                  comments: _commentService
-                                      .getCommentsForPost(post.id),
-                                ),
-                              ),
-                            );
-                            if (updatedPost != null) {
-                              setState(() {
-                                _userPosts[index] = updatedPost;
-                              });
-                            }
-                          },
-                        );
+                        List<Post> userLikedPosts = posts
+                            .where((post) => post.likes.contains(loggeInUserId))
+                            .toList();
+
+                        List<Comment>? comments =
+                            postProvider.getCommentById(post.id);
+
+                        return Consumer<PostProvider>(
+                            builder: (context, postProvider, child) {
+                          return PostWidget(
+                            profileImage: postUser.profileUrl,
+                            username: postUser.name,
+                            time: post.createdAt.toString(),
+                            likes: post.likes.length,
+                            caption: post.text,
+                            postImage: post.image,
+                            comments: comments!.length,
+                            isLikedByCurrentUser:
+                                post.likes.contains(loggeInUserId),
+                            onLikePressed: () => postProvider.toggleLike(
+                                post.id, loggeInUserId!),
+                            postDetailPressed: () async {
+                              Provider.of<PostProvider>(context, listen: false)
+                                  .setSelectedPost(post);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PostDetailScreen()));
+                            },
+                          );
+                        });
                       },
                     ),
             ),
