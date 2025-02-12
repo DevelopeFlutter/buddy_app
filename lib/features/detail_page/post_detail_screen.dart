@@ -1,7 +1,5 @@
 import 'package:buddy_app/constants/app_icons.dart';
 import 'package:buddy_app/constants/text_styles.dart';
-import 'package:buddy_app/features/auth/model/user_model.dart';
-import 'package:buddy_app/features/auth/services/auth_services.dart';
 import 'package:buddy_app/features/detail_page/model/comments_model.dart';
 import 'package:buddy_app/features/landing_page/post_provider.dart';
 import 'package:buddy_app/features/landing_page/widgets/custom_avatar.dart';
@@ -9,30 +7,14 @@ import 'package:buddy_app/features/landing_page/widgets/post_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PostDetailScreen extends StatefulWidget {
-  const PostDetailScreen({
+import '../auth/services/auth_provider.dart';
+
+class PostDetailScreen extends StatelessWidget {
+  PostDetailScreen({
     super.key,
   });
 
-  @override
-  State<PostDetailScreen> createState() => _PostDetailScreenState();
-}
-
-class _PostDetailScreenState extends State<PostDetailScreen> {
-  TextEditingController _commentController = TextEditingController();
-
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
+  final TextEditingController _commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,47 +24,47 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     var user = Provider.of<PostProvider>(context).selectedUser;
 
     List<Comment>? comments;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: SingleChildScrollView(
-            reverse: true,
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height),
-                child: Column(children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Image.asset(AppIcons.backArrowIcon),
+    return Provider.of<PostProvider>(context).postDetailLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            resizeToAvoidBottomInset: true,
+            body: SafeArea(
+              child: SingleChildScrollView(
+                  reverse: true,
+                  child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height),
+                      child: Column(children: [
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      const Text(
-                        'Post',
-                        style: TextStyle(
-                            fontFamily: AppTextStyles.arialRoundedMTBold,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      const SizedBox(),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : Consumer<PostProvider>(
-                          builder: (context, postPrvider, child) {
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Image.asset(AppIcons.backArrowIcon),
+                              ),
+                            ),
+                            const Text(
+                              'Post',
+                              style: TextStyle(
+                                  fontFamily: AppTextStyles.arialRoundedMTBold,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800),
+                            ),
+                            const SizedBox(),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Consumer<PostProvider>(
+                            builder: (context, postPrvider, child) {
                           comments = postPrvider.getCommentById(post!.id);
                           return PostWidget(
                             profileImage: user!.profileUrl,
@@ -100,10 +82,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             postDetailPressed: () {},
                           );
                         }),
-                  Expanded(
-                    child: _isLoading
-                        ? const SizedBox.shrink()
-                        : SingleChildScrollView(
+                        Expanded(
+                          child: SingleChildScrollView(
                             child: Column(
                               children: [
                                 Consumer<PostProvider>(
@@ -116,8 +96,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         const NeverScrollableScrollPhysics(),
                                     itemCount: comments!.length,
                                     itemBuilder: (context, index) {
-                                      final comment = comments[index]; 
-                                  final user =
+                                      final comment = comments[index];
+                                      final user =
                                           Provider.of<PostProvider>(context)
                                               .getUserById(comment.userId);
                                       return Padding(
@@ -185,43 +165,45 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               ],
                             ),
                           ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: TextField(
-                              controller: _commentController,
-                              decoration: const InputDecoration(
-                                hintText: "Add a comment...",
-                                border: InputBorder.none,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: TextField(
+                                    controller: _commentController,
+                                    decoration: const InputDecoration(
+                                      hintText: "Add a comment...",
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              IconButton(
+                                icon: const Icon(Icons.send),
+                                onPressed: () {
+                                  if (_commentController.text.isNotEmpty) {
+                                    Provider.of<PostProvider>(context,
+                                            listen: false)
+                                        .addComment(post!.id, loggedInUserId!,
+                                            _commentController.text);
+                                    _commentController.clear();
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.send),
-                          onPressed: () {
-                            if (_commentController.text.isNotEmpty) {
-                              Provider.of<PostProvider>(context, listen: false)
-                                  .addComment(post!.id, loggedInUserId!,
-                                      _commentController.text);
-                              _commentController.clear();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ]))),
-      ),
-    );
+                      ]))),
+            ),
+          );
   }
 }

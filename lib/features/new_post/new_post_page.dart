@@ -1,16 +1,18 @@
+import 'dart:io';
+
 import 'package:buddy_app/constants/app_icons.dart';
 import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/auth/components/app_button.dart';
+import 'package:buddy_app/features/auth/services/auth_provider.dart';
+import 'package:buddy_app/features/landing_page/model/post_model.dart';
+import 'package:buddy_app/features/landing_page/post_provider.dart';
 import 'package:buddy_app/features/landing_page/widgets/app_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:buddy_app/features/landing_page/model/post_model.dart';
+import 'package:provider/provider.dart';
 
 class CreatePostScreen extends StatefulWidget {
-  final String userId;
-
-  const CreatePostScreen({super.key, required this.userId});
+  const CreatePostScreen({super.key});
 
   @override
   _CreatePostScreenState createState() => _CreatePostScreenState();
@@ -31,38 +33,33 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
   }
 
-  void _createPost(String text) {
+  void _createPost(String text, BuildContext context) async {
     if (text.isEmpty && _image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: const Text('Please enter text or select an image')),
+        const SnackBar(content: Text('Please enter text or select an image')),
       );
-      
+      return;
     }
-
-    setState(() {
-      _isPosting = true;
-    });
 
     String formattedTime =
         "${DateTime.now().hour % 12 == 0 ? 12 : DateTime.now().hour % 12}:${DateTime.now().minute.toString().padLeft(2, '0')} ${DateTime.now().hour >= 12 ? 'PM' : 'AM'}";
-
     String imageUrl = _image?.path ?? '';
+    String loggedInUserId =
+        Provider.of<AuthProvider>(context, listen: false).loggeInUsers!;
 
     Post newPost = Post(
-      id: 'newPost',
-      title: 'Post Title',
+      id: DateTime.now().toString(),
+      title: 'New Post',
       text: text,
       image: imageUrl,
-      userId: widget.userId,
+      userId: loggedInUserId,
       createdAt: formattedTime,
       likes: [],
     );
 
+    await Provider.of<PostProvider>(context, listen: false).addNewPost(newPost);
 
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pop(context);
-    });
+    Navigator.pop(context);
   }
 
   @override
@@ -111,7 +108,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           fontSize: 14,
                         ),
                         onTap: () {
-                          _createPost(_controller.text);
+                          _createPost(_controller.text, context);
                         },
                         text: 'POST',
                       ),
@@ -160,8 +157,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            if (_isPosting)
-              const Center(child: Align(child: CircularProgressIndicator())),
+            Provider.of<PostProvider>(context).createPostLoading
+                ? const Center(child: Align(child: CircularProgressIndicator()))
+                : const Center(),
             _image != null
                 ? Expanded(
                     child: Stack(

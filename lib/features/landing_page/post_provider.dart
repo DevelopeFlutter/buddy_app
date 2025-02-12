@@ -14,11 +14,19 @@ class PostProvider extends ChangeNotifier {
   Post? selectedPost;
   List<User>? get allUsers => _allUsers;
   List<Post>? get allPosts => _allPosts;
+  bool isLoading = true;
+  bool profileLoading = true;
+  bool postDetailLoading = true;
+  bool createPostLoading = false;
 
   Future<void> getAllPosts() async {
+    isLoading = true;
+
+    await Future.delayed(const Duration(seconds: 3));
     Map<String, dynamic> data = await JsonService.loadJsonData();
     _allPosts =
         (data['posts'] as List).map((post) => Post.fromJson(post)).toList();
+    isLoading = false;
 
     notifyListeners();
   }
@@ -31,9 +39,12 @@ class PostProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedPost(Post post) {
+  void setSelectedPost(Post post) async {
     selectedPost = post;
     selectedUser = _allUsers?.firstWhere((users) => users.id == post.userId);
+    await Future.delayed(const Duration(seconds: 3));
+
+    postDetailLoading = false;
     notifyListeners();
   }
 
@@ -79,14 +90,34 @@ class PostProvider extends ChangeNotifier {
     return _allUsers!.firstWhere((users) => users.id == id);
   }
 
-  void getProfileUser(String id) {
+  void getProfileUser(String id) async {
     profileUser = _allUsers!.firstWhere((users) => users.id == id);
-    print('${profileUser!.name} Name');
+    profileLoading = true;
+    await Future.delayed(const Duration(seconds: 3));
+
+    profileLoading = false;
+
+    notifyListeners();
   }
 
-  void addNewPost(Post post) {
-    _allPosts!.add(post);
+  void toggleFollow(String userId, String followUserId) {
+    User user = allUsers!.firstWhere((users) => users.id == userId);
+    if (user.followers.contains(followUserId)) {
+      user.followers.remove(followUserId);
+    } else {
+      user.followers.add(followUserId);
+    }
+    notifyListeners();
+  }
 
+  Future<void> addNewPost(Post post) async {
+    createPostLoading = true;
+    notifyListeners();
+
+    _allPosts!.insert(0, post);
+    await Future.delayed(const Duration(seconds: 3));
+
+    createPostLoading = false;
     notifyListeners();
   }
 }

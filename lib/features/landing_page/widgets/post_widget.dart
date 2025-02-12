@@ -56,8 +56,8 @@ class PostWidget extends StatelessWidget {
                       SizedBox(
                         width: 210,
                         child: Text(
-                          overflow: TextOverflow.ellipsis,
-                          username,
+                            overflow: TextOverflow.ellipsis,
+                            username,
                             style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 color: Colors.black.withOpacity(0.8),
@@ -100,15 +100,17 @@ class PostWidget extends StatelessWidget {
             onTap: postDetailPressed,
             child: postImage.startsWith('http') || postImage.startsWith('https')
                 ? SizedBox(child: AppNetworkImage(imgPath: postImage))
-                : ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: SizedBox(
-                        width: double.infinity,
-                        height: 300,
-                        child: Image.asset(postImage, fit: BoxFit.cover))),
+                : postImage == ""
+                    ? Center()
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: SizedBox(
+                            width: double.infinity,
+                            height: 300,
+                            child: Image.asset(postImage, fit: BoxFit.cover))),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 3,top: 10),
+            padding: const EdgeInsets.only(left: 3, top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -152,8 +154,7 @@ class PostWidget extends StatelessWidget {
             endIndent: 60,
             indent: 80,
           ),
-                    const SizedBox(height: 30),
-
+          const SizedBox(height: 30),
         ],
       ),
     );

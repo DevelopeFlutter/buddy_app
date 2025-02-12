@@ -1,7 +1,7 @@
 import 'package:buddy_app/constants/text_styles.dart';
 import 'package:buddy_app/features/auth/components/app_button.dart';
 import 'package:buddy_app/features/auth/components/app_textfield.dart';
-import 'package:buddy_app/features/auth/services/auth_services.dart';
+import 'package:buddy_app/features/auth/services/auth_provider.dart';
 import 'package:buddy_app/features/landing_page/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,13 +17,11 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  bool isLoading = false;
-  bool hideUI = false;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<AuthProvider>(context,listen: false).loadUsers();
+    Provider.of<AuthProvider>(context, listen: false).loadUsers();
   }
 
   void _login() async {
@@ -31,27 +29,19 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    setState(() {
-      hideUI = true;
-    });
-
-    await Future.delayed(const Duration(seconds: 3));
-
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
-    var user = Provider.of<AuthProvider>(context,listen: false).login(email, password);
-    setState(() {
-      hideUI = false;
-    });
+    await Provider.of<AuthProvider>(context, listen: false)
+        .login(email, password);
 
-    if (user != null) {
+    if (Provider.of<AuthProvider>(context, listen: false).loggeInUsers !=
+        null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Login Successful')));
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-            builder: (context) => const LandingPage()),
+        MaterialPageRoute(builder: (context) => const LandingPage()),
       );
     } else {
       ScaffoldMessenger.of(context)
@@ -66,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: hideUI
+            child: Provider.of<AuthProvider>(context).loginLoading
                 ? const CircularProgressIndicator()
                 : Form(
                     key: _formKey,
